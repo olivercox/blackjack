@@ -43,7 +43,7 @@
         </div>
       </div>
       <div class="row">
-        <div ng-repeat="player in game.players" ng-if="!player.isDealer" class="col-md-4 text-center {{ $index | playerOffset:options.playerCount }}">
+        <div ng-repeat="player in game.players" ng-if="!player.isDealer" class="col-md-4 text-center {{ $index | playerOffset:game.players.length-1 }}">
           <h2>{{ player.name }}</h2>
           <div ng-repeat="hand in player.hands">
             <p>Score:<span ng-show="!player.isComputer || game.gameOver">{{ hand.score() }}</span><span ng-show="player.isComputer && !game.gameOver">?</span></p>
