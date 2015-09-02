@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+  <script src="javascripts/app.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="stylesheets/style.css">
+</head>
+<body ng-app="blackjack" ng-controller="BlackjackCtrl">
+  <div class="container">
+    <h1 class="text-center">Beamery Blackjack Challenge</h1>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="text-center">
+          <p>Enter your name and choose the number of players (1 to 3)</p>
+          <form class="form-inline">
+            <div class="form-group">
+              <label for="playerName" class="sr-only">Email address</label>
+              <input id="playerName" type="text" ng-model="options.playerName" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <input type="number" ng-model="options.playerCount" min="1" max="3" ng-blur="coercePlayers($event)" class="form-control"/>
+            </div>
+            <div class="form-group">
+              <button ng-click="startGame()" class="btn btn-default">Start Game</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="row">
+        <div class="col-md-4 col-md-offset-4 text-center">
+          <h2>Dealer</h2>
+          <div ng-repeat="hand in game.dealer.hands">
+            <p>Score:<span ng-show="game.gameOver">{{ hand.score() }}</span><span ng-show="!game.gameOver">?</span></p>
+            <p><span ng-show="hand.bust">BUST! </span><span ng-show="game.gameOver"><span ng-show="hand.wins">Dealer Wins</span></span></p>
+            <div ng-repeat="card in hand.cards" ng-class="{ back:$index&gt;0 && !game.gameOver, turned:$index&gt;0 && !game.gameOver }"
+            class="card {{card.suit|lowercase}} {{card.name|lowercase}}"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div ng-repeat="player in game.players" ng-if="!player.isDealer" class="col-md-4 text-center {{ $index | playerOffset:options.playerCount }}">
+          <h2>{{ player.name }}</h2>
+          <div ng-repeat="hand in player.hands">
+            <p>Score:<span ng-show="!player.isComputer || game.gameOver">{{ hand.score() }}</span><span ng-show="player.isComputer && !game.gameOver">?</span></p>
+            <p><span ng-show="hand.bust">BUST! </span><span ng-show="game.gameOver"><span ng-show="hand.wins">Hand Wins</span><span ng-show="!hand.wins">Dealer Wins</span></span></p>
+            <div ng-repeat="card in hand.cards" ng-class="{ back:player.isComputer && !game.gameOver, turned:player.isComputer && !game.gameOver }"
+            class="card {{card.suit|lowercase}} {{card.name|lowercase}}"></div>
+            <div ng-show="!player.isComputer" class="text-center game-buttons">
+              <button ng-click="hit(player, hand)" ng-disabled="hand.bust||hand.stand" class="btn btn-default btn-sm">Hit</button>
+              <button ng-click="stand(player, hand)" ng-disabled="hand.bust||hand.stand" class="btn btn-default btn-sm">Stand</button>
+              <button ng-click="split(player, hand)" ng-disabled="player|canSplit:hand" class="btn btn-default btn-sm">Split</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 v-margin">
+          <div class="text-center">
+            <button ng-show="game.gameOver" ng-click="startGame()" class="btn btn-primary">Next hand</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="cardsprite-preloader"></div>
+  </div>
+</body>
+</html>

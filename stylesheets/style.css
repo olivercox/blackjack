@@ -1,0 +1,59 @@
+html {
+  background: #1e5799; /* Old browsers */
+  background: -moz-linear-gradient(top,  #1e5799 0%, #2989d8 50%, #7db9e8 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#1e5799), color-stop(50%,#2989d8), color-stop(100%,#7db9e8)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #1e5799 0%,#2989d8 50%,#7db9e8 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #1e5799 0%,#2989d8 50%,#7db9e8 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #1e5799 0%,#2989d8 50%,#7db9e8 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #1e5799 0%,#2989d8 50%,#7db9e8 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#7db9e8',GradientType=0 ); /* IE6-9 */
+  min-height: 100%;
+}
+
+body {
+  padding: 20px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: transparent;
+  color: #E2E2E2;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#cardsprite-preloader { background: url(../images/card_spritesheet.png) no-repeat -9999px -9999px; }
+
+
+.form-inline .form-group { margin-right: 2px; }
+.v-margin { margin: 15px 0; }
+.game-buttons .btn {margin: 2px}
+.card {
+  height:63px;
+  width:44px;
+  display:inline-block;
+  margin: 2px;
+  background-image:url(../images/card_spritesheet.png);
+  background-repeat:no-repeat;
+}
+/* Suites */
+.hearts { background-position-y:0px; }
+.diamonds { background-position-y:-63px; }
+.clubs { background-position-y:-126px; }
+.spades { background-position-y:-189px; }
+.back { background-position-y:-252px; }
+
+/* Values */
+.ace { background-position-x:0px; }
+.two { background-position-x:-44px; }
+.three { background-position-x:-88px; }
+.four { background-position-x:-132px; }
+.five { background-position-x:-176px; }
+.six { background-position-x:-220px; }
+.seven { background-position-x:-264px; }
+.eight { background-position-x:-308px; }
+.nine { background-position-x:-352px; }
+.ten { background-position-x:-396px; }
+.jack { background-position-x:-440px; }
+.queen { background-position-x:-484px; }
+.king { background-position-x:-528px; }
+.turned { background-position-x:0px; }
