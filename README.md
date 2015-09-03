@@ -56,6 +56,6 @@ The solution uses the following open source libraries:
 
 ## Possible improvements
 
-There are many but I would start with implementing the split feature for dealer and computer. I would update the UI and shoot for blackjack table look and feel with animations for the card deal and turn.
+There are many but I would start with implementing the split feature for dealer and computer. I would update the UI and shoot for a blackjack table look and feel with animations for the card deal and turn.
 
 As previously mentioned a server side solution with multiplayer support would be a great addition.
