@@ -44,7 +44,7 @@ The game allows for one human player and up-to two computer players in addition 
 
 The dealer and computer players use a simple playing strategy of hit to 16, stand on 17. I also opted for a dealer wins draws which isn't always the case but made the logic easier as there is always a winning hand.
 
-The human player can hit and stand on any number and the split feature is implemented. The split feature has not been added to the dealer and computer player logic.
+The human player can hit and stand on any number and the split feature is implemented but does not yet support splitting again. The split feature has not been added to the dealer and computer player logic.
 
 ## External Libraries
 
