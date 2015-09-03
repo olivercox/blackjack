@@ -1,39 +1,67 @@
 angular.module('blackjack', []);
 
+/**
+ * Blackjack view controller
+ */
 angular.module('blackjack').controller('BlackjackCtrl', ['$scope', 'Game',
   function ($scope, Game) {
     $scope.options = {
       playerName: 'Player 1',
       playerCount: 1
     }
+    /**
+     * Ensures players is valid or 1
+     */
     $scope.coercePlayers = function(event) {
       if(!$scope.options.playerCount) $scope.options.playerCount = 1;
     }
+    /**
+     * Handles the Start Game button click
+     */
     $scope.startGame = function() {
       $scope.game = new Game();
       $scope.game.start($scope.options);
     }
+    /**
+     * Handles the Hit button click
+     */
     $scope.hit = function(player, hand) {
+      // Hit the hand then play computer players
       $scope.game.hitHand(player, hand);
       $scope.game.playComputerPlayers(false);
+      // If the human player has finished play computer and dealer hands
       if(player.hasFinished()) {
         $scope.game.finishGame();
       }
     }
+    /**
+     * Handles the Stand button click
+     */
     $scope.stand = function(player, hand) {
+      // Hit the hand then play computer players
       $scope.game.standHand(hand);
       $scope.game.playComputerPlayers(false);
+      // If the human player has finished play computer and dealer hands
       if(player.hasFinished()) {
         $scope.game.finishGame();
       }
     }
+    /**
+     * Handles the Split button click
+     */
     $scope.split = function(player, hand) {
       $scope.game.splitHand(player, hand);
     }
 }]);
 
+/**
+ * Factory definition for Deck
+ */
 angular.module('blackjack').factory('Deck', function () {
 
+    /**
+     * Ctor for Deck
+     */
     var Deck = function() {
         this.cards = buildDeck();
     };
@@ -55,6 +83,9 @@ angular.module('blackjack').factory('Deck', function () {
         { name: 'King', value: 10 }
       ];
 
+    /**
+     * Builds a deck of cards by combining suit and card arrays
+     */
     function buildDeck() {
         var cards = [];
         _.each(suits, function(suit) {
@@ -71,6 +102,10 @@ angular.module('blackjack').factory('Deck', function () {
 
     Deck.prototype.cards = this.cards;
 
+    /**
+     * Shuffles the deck of cards by moving each card to a
+     * random position in the array
+     */
     Deck.prototype.shuffle = function() {
         for (var i = 51; i > 0; i--) {
             var r = Math.floor((i+1)*Math.random(i));
@@ -82,16 +117,26 @@ angular.module('blackjack').factory('Deck', function () {
     return Deck;
 });
 
+/**
+ * Factory definition for Player
+ */
 angular.module('blackjack').factory('Player', ['Hand', function (Hand) {
 
+  /**
+   * Ctor for Player. Players have an array of hands to support splitting
+   */
   var Player = function(isComputer, isDealer, name) {
       this.name = name;
       this.isComputer = isComputer;
       this.isDealer = isDealer;
-      this.hands = [new Hand(this)];
+      this.hands = [new Hand()];
   };
 
   Player.prototype.hands = this.hands;
+
+  /**
+   * Helper function for determining if every hand the player has has finished
+   */
   Player.prototype.hasFinished = function() {
     var finished = true;
     _.each(this.hands, function(hand) {
@@ -105,10 +150,15 @@ angular.module('blackjack').factory('Player', ['Hand', function (Hand) {
   return Player;
 }]);
 
+/**
+ * Factory definition for Hand
+ */
 angular.module('blackjack').factory('Hand', function () {
-  var player = null;
-  var Hand = function(player, cards) {
-      player = player;
+
+  /**
+   * Ctor for Hand
+   */
+  var Hand = function(cards) {
       this.cards = cards ? cards : [];
       this.bust = false;
       this.stand = false;
@@ -119,6 +169,9 @@ angular.module('blackjack').factory('Hand', function () {
   Hand.prototype.isBust = function() {
     if(this.score() > 21) this.bust = true;
   }
+  /**
+   * Get the current score for a hand. Aces low unless <= 11
+   */
   Hand.prototype.score = function() {
     var hasAce = false;
     var score = _.reduce(this.cards, function(score, card) {
@@ -132,8 +185,15 @@ angular.module('blackjack').factory('Hand', function () {
   return Hand;
 });
 
+/**
+ * Factory definition for Game
+ */
 angular.module('blackjack').factory('Game', ['Player', 'Hand', 'Deck',
   function (Player, Hand, Deck) {
+
+  /**
+   * Ctor for Game
+   */
   var Game = function() {
       this.players = [];
       this.dealer = null;
@@ -143,13 +203,16 @@ angular.module('blackjack').factory('Game', ['Player', 'Hand', 'Deck',
   };
 
   /**
-   * Start the game, add players, shuffle
+   * Start the game, add players, shuffle and deal
    */
   Game.prototype.start = function(options) {
     this.gameInProgress = true;
+    // The dealer and computers are added to players but referenced in
+    // specific properties for convenience
     this.dealer = new Player(false, true, 'Dealer')
     this.players.push(this.dealer);
     this.players.push(new Player(false, false, options.playerName));
+    // Add the remaining player count as computer players
     _.times(options.playerCount-1, function(num) {
       this.computerPlayers.push(new Player(true, false, 'Computer ' + (num+1)));
       this.players.push(this.computerPlayers[this.computerPlayers.length-1]);
@@ -172,27 +235,43 @@ angular.module('blackjack').factory('Game', ['Player', 'Hand', 'Deck',
     }, this);
   }
 
+  /**
+   * Hit the players hand with a new card
+   */
   Game.prototype.hitHand = function(player, hand, recurse) {
+    // Check if the player should play, applies only to computer and dealer
     if(this.shouldPlay(player, hand)) {
       hand.cards.push(this.deck.cards.pop());
     }
+    // If the player should play and recurse is true keeping playing
     if(recurse && this.shouldPlay(player, hand)) {
         hand.cards.push(this.deck.cards.pop());
     }
+    // Force a check on the status of the hand
     hand.isBust();
   }
 
+  /**
+   * Sets a hand to a stand state
+   */
   Game.prototype.standHand = function(hand) {
     hand.stand = true;
   }
 
+  /**
+   * Split the a hand
+   */
   Game.prototype.splitHand = function(player, hand) {
     player.hands = [
-      new Hand(player, [hand.cards[0], this.deck.cards.pop()]),
-      new Hand(player, [hand.cards[1], this.deck.cards.pop()])
+      new Hand([hand.cards[0], this.deck.cards.pop()]),
+      new Hand([hand.cards[1], this.deck.cards.pop()])
     ];
   }
 
+  /**
+   * Checks if the player should play. This applies to computer and dealer
+   * The human player will make their own decision
+   */
   Game.prototype.shouldPlay = function(player, hand) {
     if(player.isComputer||player.isDealer) {
       if(hand.score() >= 17) hand.stand = true;
@@ -201,6 +280,9 @@ angular.module('blackjack').factory('Game', ['Player', 'Hand', 'Deck',
     return true;
   }
 
+  /**
+   * Plays the hands for computer players
+   */
   Game.prototype.playComputerPlayers = function(recurse) {
     _.each(this.computerPlayers, function(player) {
       _.each(player.hands, function(hand) {
@@ -209,12 +291,18 @@ angular.module('blackjack').factory('Game', ['Player', 'Hand', 'Deck',
     }, this);
   }
 
+  /**
+   * Plays the hands of the dealer
+   */
   Game.prototype.playDealer = function() {
     _.each(this.dealer.hands, function(hand) {
       this.hitHand(this.dealer, hand, true);
     }, this);
   }
 
+  /**
+   * Finishes a game when the human player has finished
+   */
   Game.prototype.finishGame = function() {
     this.playComputerPlayers(true);
     this.playDealer();
@@ -237,6 +325,9 @@ angular.module('blackjack').factory('Game', ['Player', 'Hand', 'Deck',
   return Game;
 }]);
 
+/**
+ * Filter definition to set the player offset based on the number of players
+ */
 angular.module('blackjack').filter('playerOffset', function() {
   return function(index, players) {
     if(index===1) {
@@ -246,6 +337,9 @@ angular.module('blackjack').filter('playerOffset', function() {
   };
 });
 
+/**
+ * Filter definition that returns whether a hand can be split
+ */
 angular.module('blackjack').filter('canSplit', function() {
   return function(player, hand) {
     if(!player.isComputer && !player.isDealer) {
