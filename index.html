@@ -43,7 +43,7 @@
         </div>
       </div>
       <div class="row">
-        <div ng-repeat="player in game.players" ng-if="!player.isDealer" class="col-md-4 text-center {{ $index | playerOffset:game.players.length-1 }}">
+        <div ng-repeat="player in game.players" ng-if="!player.isDealer" class="col-sm-4 text-center {{ $index | playerOffset:game.players.length-1 }}">
           <h2>{{ player.name }}</h2>
           <div ng-repeat="hand in player.hands">
             <p>Score:<span ng-show="!player.isComputer || game.gameOver">{{ hand.score() }}</span><span ng-show="player.isComputer && !game.gameOver">?</span></p>
@@ -55,13 +55,13 @@
               <button ng-click="stand(player, hand)" ng-disabled="hand.bust||hand.stand" class="btn btn-default btn-sm">Stand</button>
               <button ng-click="split(player, hand)" ng-disabled="player|canSplit:hand" class="btn btn-default btn-sm">Split</button>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12 v-margin">
-          <div class="text-center">
-            <button ng-show="game.gameOver" ng-click="startGame()" class="btn btn-primary">Next hand</button>
+            <div class="row" ng-show="!player.isComputer">
+              <div class="col-md-12 v-margin">
+                <div class="text-center">
+                  <button ng-show="game.gameOver" ng-click="startGame()" class="btn btn-primary">Next hand</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
