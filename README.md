@@ -3,8 +3,8 @@
 ## Overview
 
 I decided to focus on creating a simplied game of Blackjack in client side
-Javascript and Angularjs. Although toyed with the idea of a server side
-solution with multiplayer features I felt this would increase the complexity
+Javascript and Angularjs. Although I toyed with the idea of a server side
+solution with multiplayer features, I felt this would increase the complexity
 and time required without adding anything to the goal.
 
 My goal, was to create a Blackjack game in angularjs that would demonstrate
@@ -26,7 +26,7 @@ The solution structure is very simple:-
         with the card sprite image
 
 Within the app.js I have structured the Angularjs using factory definition
-that allow for specific instantiations of objects (e.g. Deck and Player).
+that allows for specific instantiations of objects (e.g. Deck and Player).
 
     angular.module('blackjack').factory('Deck', function () {
       var Deck = function() {
@@ -36,11 +36,11 @@ that allow for specific instantiations of objects (e.g. Deck and Player).
       return Deck;
     }]);
 
-Although not necessary with Angular which is often written in a more functional programming idiom I felt that the logic associated with the different objects lent itself well to an object oriented approach.
+Although not necessary with Angular, which is often written in a more functional programming idiom, I felt that the logic associated with the different objects lent itself well to an object oriented approach.
 
 ## Game logic
 
-The game allows for one human player and up-to two computer players in addition to the dealer. I opted for the a limit purely to make the UI easier and ensure that layout was functional.
+The game allows for one human player and up-to two computer players in addition to the dealer. I opted for a limit, purely to make the UI easier and ensure that layout was functional.
 
 The dealer and computer players use a simple playing strategy of hit to 16, stand on 17. I also opted for a dealer wins draws which isn't always the case but made the logic easier as there is always a winning hand.
 
